@@ -3,7 +3,6 @@ import { createContext, useContext, useState, useEffect } from "react";
 import './App.css';
 
 import AboutGct from './Pages/AboutGct.jsx';
-import Enrollment from './Pages/Enrollment.jsx';
 import Courses from './Pages/Courses.jsx';
 import Library from './Pages/Library.jsx';
 
@@ -59,7 +58,6 @@ function App() {
         <AuthProvider>
           <Routes>
             <Route path='/' element = {<AboutGct/>}/>
-            <Route path='/Enrollment' element = {<Enrollment/>}/>
             <Route path='/Courses' element = {<Courses/>}/>
             <Route path='/Library' element = {<Library/>}/>
             <Route

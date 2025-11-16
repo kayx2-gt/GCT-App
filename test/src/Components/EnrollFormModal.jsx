@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import tuitionFees from "../Data/TuitionFees";
 import API_URL from "../config";
+import '../Enrollment.css';
 
 export default function EnrollFormModal({ isOpen, closeModal }) {
         const [step, setStep] = useState(1);    
