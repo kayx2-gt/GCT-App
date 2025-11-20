@@ -124,14 +124,22 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="arrow-container-navbar">
-        <button
-          className={`down-arrow ${isNavbarDown ? "arrow-up" : ""}`}
-          onClick={toggleNavbar}
-        >
-          ▼
-        </button>
-      </div>
+      <div
+  className="arrow-container-navbar"
+  style={{
+    opacity: isMenuOpen ? 0 : 1,
+    pointerEvents: isMenuOpen ? "none" : "auto",
+    transition: "opacity 0.3s ease"
+  }}
+>
+  <button
+    className={`down-arrow ${isNavbarDown ? "arrow-up" : ""}`}
+    onClick={toggleNavbar}
+  >
+    ▼
+  </button>
+</div>
+
 
       <UserModal isOpen={isUserModal} closeModal={() => setIsUserModal(false)} />
       <ContactModal isOpen={isModalOpen} closeModal={() => setIsModalOpen(false)} />

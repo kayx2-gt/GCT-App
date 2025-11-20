@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+//adminpannel.jsx
+import React, { useState, useEffect } from "react"; 
 import AdminModal from "../Components/AdminModal";
 import "../LibraryInv.css";
 import API_URL from "../config";
+
+// 🔥 Import ExportEnrollment component
+import ExportEnrollment from "../Admin/ExportEnrollment";
 
 export default function AdminPanel() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [enrollments, setEnrollments] = useState([]);
+  const [logoBase64, setLogoBase64] = useState(""); // Store logo as base64
 
   // -------------------------------
   // ADMIN LOGIN CHECK
@@ -48,54 +53,43 @@ export default function AdminPanel() {
   }, [isAdmin]);
 
   // -------------------------------
+  // FETCH LOGO AS BASE64
+  // -------------------------------
+  useEffect(() => {
+    fetch("/Assets/GCT-Logo3.png")
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => setLogoBase64(reader.result);
+      });
+  }, []);
+
+  // -------------------------------
   // UI
   // -------------------------------
   return (
     <div className="libraryInv-body">
-      {/* Admin Login Modal */}
       <AdminModal isOpen={isModalOpen} closeModal={closeModal} />
 
       {isAdmin ? (
         <>
-          {/* ---------------------- */}
-          {/* ADMIN NAVIGATION BAR   */}
-          {/* ---------------------- */}
           <nav className="admin-navbar">
             <ul>
               <li>
-                <a 
-                  href="/BookInventory" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  📚 Book Inventory
-                </a>
+                <a href="/BookInventory" target="_blank" rel="noopener noreferrer">📚 Book Inventory</a>
               </li>
-
               <li>
-                <a 
-                  href="/StudentUser" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  👨‍🎓 Student User
-                </a>
+                <a href="/StudentUser" target="_blank" rel="noopener noreferrer">👨‍🎓 Student User</a>
               </li>
             </ul>
 
             <div id="admin">
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="nav-link-like"
-              >
+              <button onClick={() => setIsModalOpen(true)} className="nav-link-like">
                 <img src="/Assets/manager.png" alt="Admin" />
               </button>
             </div>
           </nav>
-
-          {/* ---------------------- */}
-          {/* ENROLLMENT RECORDS     */}
-          {/* ---------------------- */}
 
           <div className="libheader">
             <h1>Enrollment Records</h1>
@@ -118,6 +112,7 @@ export default function AdminPanel() {
                   <th>Payment Mode</th>
                   <th>Payment Type</th>
                   <th>Amount</th>
+                  <th>Export</th>
                 </tr>
               </thead>
 
@@ -128,40 +123,32 @@ export default function AdminPanel() {
                     <td>{`${e.lastName}, ${e.firstName} ${e.middleName}`}</td>
                     <td>{e.dob}</td>
                     <td>{e.sex}</td>
-
                     <td>{e.course}</td>
                     <td>{e.yearLevel}</td>
                     <td>{e.semester}</td>
-
                     <td>{e.email}</td>
-
                     <td>
                       {`${e.guardianLastName}, ${e.guardianFirstName} (${e.guardianEmail})`}
-                      <br />
-                      📞 {e.guardianContact}
+                      <br />📞 {e.guardianContact}
                     </td>
-
-                    <td>
-                      {e.paymentMode === "1"
-                        ? "Cash"
-                        : e.paymentMode === "2"
-                        ? "Card"
-                        : "Gcash"}
-                    </td>
-
-                    <td>
-                      {e.paymentType === "1" ? "Fully Paid" : "Installment"}
-                    </td>
-
+                    <td>{e.paymentMode === "1" ? "Cash" : e.paymentMode === "2" ? "Card" : "Gcash"}</td>
+                    <td>{e.paymentType === "1" ? "Fully Paid" : "Installment"}</td>
                     <td>{e.amount}</td>
+
+                    <td>
+                      {/* 🔥 Use ExportEnrollment component */}
+                      <ExportEnrollment 
+                          enrollment={e}
+                          logoBase64={logoBase64}
+                          formImageUrl={"/Assets/enrollment_form.png"}
+                      />
+                    </td>
                   </tr>
                 ))}
 
                 {enrollments.length === 0 && (
                   <tr>
-                    <td colSpan="12" className="empty-msg">
-                      No enrollment data submitted yet.
-                    </td>
+                    <td colSpan="13" className="empty-msg">No enrollment data submitted yet.</td>
                   </tr>
                 )}
               </tbody>

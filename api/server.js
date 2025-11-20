@@ -59,6 +59,7 @@ db.run(
     guardianMiddleName TEXT,
     guardianFirstName TEXT,
     guardianEmail TEXT,
+    guardianRelation TEXT,
     guardianContact TEXT,
     paymentMode TEXT,
     paymentType TEXT,
@@ -88,6 +89,7 @@ app.post("/api/enroll", (req, res) => {
     pMiddleName,
     pFirstName,
     pEmail,
+    pRelation,
     contact,
     selectedPaymentMode,
     selectedPayment,
@@ -111,16 +113,15 @@ app.post("/api/enroll", (req, res) => {
   const id = uuidv4();
 
   db.run(
-    `
-    INSERT INTO enrollments (
+  `INSERT INTO enrollments (
       id, lastName, middleName, firstName, dob, sex,
       course, yearLevel, semester, email,
-      guardianLastName, guardianMiddleName, guardianFirstName, guardianEmail, guardianContact,
+      guardianLastName, guardianMiddleName, guardianFirstName, guardianEmail, guardianRelation, guardianContact,
       paymentMode, paymentType, paymentNo, amount
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  )
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `,
-    [
+  [
       id,
       lastName,
       middleName,
@@ -135,12 +136,13 @@ app.post("/api/enroll", (req, res) => {
       pMiddleName,
       pFirstName,
       pEmail,
-      contact,
+      pRelation,  
+      contact,     
       selectedPaymentMode,
       selectedPayment,
       paymentNo,
-      amount,
-    ],
+      amount
+  ],
     (err) => {
       if (err) {
         console.error(err.message);

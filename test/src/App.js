@@ -56,35 +56,35 @@ function App() {
     <div className="App">
       <Router>
         <AuthProvider>
-          <Routes>
-            <Route path='/' element = {<AboutGct/>}/>
-            <Route path='/Courses' element = {<Courses/>}/>
-            <Route path='/Library' element = {<Library/>}/>
-            <Route
-              path='/Admin'
-              element={
-                <LocalhostOnly>
-                  <Admin />
-                </LocalhostOnly>
-              }
-            />
-            <Route
-              path='/BookInventory'
-              element={
-                <LocalhostOnly>
-                  <BookInventory />
-                </LocalhostOnly>
-              }
-            />
-            <Route
-              path='/StudentUser'
-              element={
-                <LocalhostOnly>
-                  <StudentUser />
-                </LocalhostOnly>
-              }
-            />
-          </Routes>
+            <Routes>
+              <Route path='/' element={<AboutGct />} />
+              <Route path='/Courses' element={<Courses />} />
+              <Route path='/Library' element={<Library />} />
+              <Route
+                path='/Admin'
+                element={
+                  <LocalhostOnly>
+                    <Admin />
+                  </LocalhostOnly>
+                }
+              />
+              <Route
+                path='/BookInventory'
+                element={
+                  <LocalhostOnly>
+                    <BookInventory />
+                  </LocalhostOnly>
+                }
+              />
+              <Route
+                path='/StudentUser'
+                element={
+                  <LocalhostOnly>
+                    <StudentUser />
+                  </LocalhostOnly>
+                }
+              />
+            </Routes>
         </AuthProvider>
       </Router>
     </div>

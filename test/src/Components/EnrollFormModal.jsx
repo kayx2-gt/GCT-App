@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import tuitionFees from "../Data/TuitionFees";
 import API_URL from "../config";
-import '../Enrollment.css';
+import "../Enrollment.css";
+import { generateEnrollmentPDF } from "../Admin/ExportEnrollment";
 
 export default function EnrollFormModal({ isOpen, closeModal }) {
         const [step, setStep] = useState(1);    
@@ -23,6 +24,7 @@ export default function EnrollFormModal({ isOpen, closeModal }) {
       const [pFirstName, setPFirstName] = useState("");
       const [pEmail, setPEmail] = useState("");
       const [contact, setContact] = useState("");
+      const [pRelation, setPRelation] = useState("");
   
       // Step 3 - Payment states
       const [selectedPayment, setSelectedPayment] = useState("");
@@ -55,7 +57,7 @@ export default function EnrollFormModal({ isOpen, closeModal }) {
         const data = {
           lastName, middleName, firstName, dob, sex,
           selectedCourse, selectedYear, selectedSemester, email,
-          pLastName, pMiddleName, pFirstName, pEmail, contact,
+          pLastName, pMiddleName, pFirstName, pEmail, pRelation, contact,
           selectedPaymentMode, selectedPayment, paymentNo, amount
         };
   
@@ -67,12 +69,40 @@ export default function EnrollFormModal({ isOpen, closeModal }) {
           });
   
           if (!response.ok) {
-            throw new Error("Failed to submit enrollment");
-          }
-  
-          const result = await response.json();
-          alert(result.message);
-          closeModal();
+          throw new Error("Failed to submit enrollment");
+        }
+
+        const result = await response.json();
+        alert(result.message);
+
+        // =======================
+        // 🔹 AUTO-DOWNLOAD PDF HERE
+        // =======================
+
+        await generateEnrollmentPDF({
+          lastName,
+          middleName,
+          firstName,
+          dob,
+          sex,
+          course: selectedCourse,
+          yearLevel: selectedYear,
+          semester: selectedSemester,
+          email,
+          guardianLastName: pLastName,
+          guardianMiddleName: pMiddleName,
+          guardianFirstName: pFirstName,
+          guardianEmail: pEmail,
+          guardianRelation: pRelation,
+          guardianContact: contact,
+          paymentMode: selectedPaymentMode,
+          paymentType: selectedPayment,
+          paymentNo,
+          amount,
+        });
+
+        // then close the form
+        closeModal();
         } catch (error) {
           console.error(error);
           alert("Error submitting enrollment");
@@ -105,7 +135,8 @@ export default function EnrollFormModal({ isOpen, closeModal }) {
               !pMiddleName.trim() ||
               !pFirstName.trim() ||
               !pEmail.trim() ||
-              !contact.trim()
+              !contact.trim() ||
+              !pRelation.trim()
             ) {
               return;
             }
@@ -321,6 +352,19 @@ export default function EnrollFormModal({ isOpen, closeModal }) {
                   onChange={(e) => setPFirstName(e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1))}
                   required
                 />
+
+                <label>Relationship to Student:</label>
+                <select
+                  value={pRelation}
+                  onChange={(e) => setPRelation(e.target.value)}
+                  required
+                >
+                  <option value="" disabled hidden>Select relationship</option>
+                  <option value="Mother">Mother</option>
+                  <option value="Father">Father</option>
+                  <option value="Guardian">Guardian</option>
+                  <option value="Other">Other</option>
+                </select>
   
                 <label>Email:</label>
                 <input
